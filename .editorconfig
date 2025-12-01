@@ -1,0 +1,31 @@
+# EditorConfig ajuda a manter estilos consistentes entre editores/IDEs
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 2
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Markdown e arquivos de texto - não remover espaços a direita (listas)
+[*.md]
+trim_trailing_whitespace = false
+
+# JSON - identação obrigatória de 2 espaços
+[*.json]
+indent_size = 2
+
+# YAML - identação obrigatória de 2 espaços
+[*.yml]
+[*.yaml]
+indent_size = 2
+
+# Scripts Shell
+[*.sh]
+end_of_line = lf
+
+# Ignore minificados
+[*.min.js]
+indent_size = 2

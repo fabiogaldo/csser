@@ -1,0 +1,86 @@
+# ======================================
+# Node / NPM
+# ======================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ======================================
+# Build outputs
+# ======================================
+dist/
+build/
+.cache/
+.cache-loader/
+out/
+
+# ======================================
+# Environment variables
+# ======================================
+.env
+.env.*     # se usar .env.dev, .env.prod etc
+backend/.env
+frontend/.env
+
+# ======================================
+# Logs
+# ======================================
+logs
+*.log
+*.log.*
+*.out
+*.pid
+*.seed
+*.gz
+
+# ======================================
+# IDE / Editor configs
+# ======================================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ======================================
+# OS generated files
+# ======================================
+.DS_Store
+Thumbs.db
+
+# ======================================
+# Mongo / Databases / Dumps
+# ======================================
+data/
+dump/
+*.lock
+
+# ======================================
+# Temporary files
+# ======================================
+temp/
+tmp/
+*.tmp
+*.bak
+
+# ======================================
+# TypeScript
+# ======================================
+*.tsbuildinfo
+
+# ======================================
+# Frontend specific
+# ======================================
+frontend/.next/
+frontend/.nuxt/
+frontend/.vercel/
+frontend/.firebase/
+frontend/.parcel-cache/
+frontend/dist/
+
+# ======================================
+# Backend specific
+# ======================================
+backend/dist/
+backend/uploads/
