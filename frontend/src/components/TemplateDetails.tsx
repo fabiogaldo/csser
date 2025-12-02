@@ -1,4 +1,5 @@
 import type { Template } from '../types/template';
+import { PreviewPanel } from './PreviewPanel';
 
 interface TemplateDetailsProps {
   template: Template | null;
@@ -13,62 +14,88 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
     );
   }
 
+  // no futuro isso vai vir de um estado de parâmetros; por enquanto, vazio:
+  const cssVars: Record<string, string> = {};
+
   return (
-    <section style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+    <section
+      style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+        overflow: 'hidden'
+      }}
+    >
       <div>
         <h2 style={{ margin: 0, fontSize: 16 }}>{template.name}</h2>
         {template.description && (
-          <p style={{ margin: '4px 0 0', fontSize: 13, opacity: 0.8 }}>{template.description}</p>
+          <p style={{ margin: '4px 0 0', fontSize: 13, opacity: 0.8 }}>
+            {template.description}
+          </p>
         )}
       </div>
 
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: '1.2fr 1fr',
+          gridTemplateColumns: '1.1fr 1.1fr 0.8fr',
           gap: '12px',
           marginTop: 8,
-          height: '100%'
+          height: '100%',
+          minHeight: 0
         }}
       >
+        {/* Preview ao vivo */}
+        <PreviewPanel html={template.html} css={template.css} cssVars={cssVars} />
+
+        {/* Código HTML/CSS */}
         <div
           style={{
             borderRadius: 8,
             border: '1px solid #1d2330',
             padding: 12,
             background: '#0f141f',
-            overflow: 'auto'
+            overflow: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 8
           }}
         >
-          <div style={{ fontSize: 12, opacity: 0.7, marginBottom: 6 }}>HTML</div>
-          <pre
-            style={{
-              margin: 0,
-              fontSize: 12,
-              background: '#050811',
-              padding: 8,
-              borderRadius: 6,
-              whiteSpace: 'pre-wrap'
-            }}
-          >
-            {template.html}
-          </pre>
+          <div>
+            <div style={{ fontSize: 12, opacity: 0.7, marginBottom: 4 }}>HTML</div>
+            <pre
+              style={{
+                margin: 0,
+                fontSize: 12,
+                background: '#050811',
+                padding: 8,
+                borderRadius: 6,
+                whiteSpace: 'pre-wrap'
+              }}
+            >
+              {template.html}
+            </pre>
+          </div>
 
-          <div style={{ fontSize: 12, opacity: 0.7, margin: '10px 0 6px' }}>CSS</div>
-          <pre
-            style={{
-              margin: 0,
-              fontSize: 12,
-              background: '#050811',
-              padding: 8,
-              borderRadius: 6,
-              whiteSpace: 'pre-wrap'
-            }}
-          >
-            {template.css}
-          </pre>
+          <div>
+            <div style={{ fontSize: 12, opacity: 0.7, marginBottom: 4 }}>CSS</div>
+            <pre
+              style={{
+                margin: 0,
+                fontSize: 12,
+                background: '#050811',
+                padding: 8,
+                borderRadius: 6,
+                whiteSpace: 'pre-wrap'
+              }}
+            >
+              {template.css}
+            </pre>
+          </div>
         </div>
 
+        {/* Parâmetros */}
         <div
           style={{
             borderRadius: 8,
@@ -80,7 +107,9 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
         >
           <div style={{ fontSize: 12, opacity: 0.7, marginBottom: 6 }}>Parâmetros</div>
           {template.params.length === 0 && (
-            <div style={{ fontSize: 12, opacity: 0.7 }}>Este template ainda não possui parâmetros.</div>
+            <div style={{ fontSize: 12, opacity: 0.7 }}>
+              Este template ainda não possui parâmetros.
+            </div>
           )}
           {template.params.map((param) => (
             <div
