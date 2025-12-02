@@ -1,5 +1,7 @@
 import type { Template } from '../types/template';
 import { PreviewPanel } from './PreviewPanel';
+import { useTemplateParams } from '../hooks/useTemplateParams';
+import { ParameterControls } from './ParameterControls';
 
 interface TemplateDetailsProps {
   template: Template | null;
@@ -14,8 +16,13 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
     );
   }
 
-  // no futuro isso vai vir de um estado de parâmetros; por enquanto, vazio:
-  const cssVars: Record<string, string> = {};
+  // A key garante que, ao trocar de template, o componente interno
+  // é remontado, reinicializando o estado baseado no novo template
+  return <TemplateDetailsInner key={template._id} template={template} />;
+}
+
+function TemplateDetailsInner({ template }: { template: Template }) {
+  const { paramValues, cssVars, handleChange, resetToDefaults } = useTemplateParams(template);
 
   return (
     <section
@@ -39,14 +46,14 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: '1.1fr 1.1fr 0.8fr',
+          gridTemplateColumns: '1.1fr 1.1fr 0.9fr',
           gap: '12px',
           marginTop: 8,
           height: '100%',
           minHeight: 0
         }}
       >
-        {/* Preview ao vivo */}
+        {/* Preview ao vivo com CSS vars aplicadas */}
         <PreviewPanel html={template.html} css={template.css} cssVars={cssVars} />
 
         {/* Código HTML/CSS */}
@@ -95,45 +102,13 @@ export function TemplateDetails({ template }: TemplateDetailsProps) {
           </div>
         </div>
 
-        {/* Parâmetros */}
-        <div
-          style={{
-            borderRadius: 8,
-            border: '1px solid #1d2330',
-            padding: 12,
-            background: '#0f141f',
-            overflow: 'auto'
-          }}
-        >
-          <div style={{ fontSize: 12, opacity: 0.7, marginBottom: 6 }}>Parâmetros</div>
-          {template.params.length === 0 && (
-            <div style={{ fontSize: 12, opacity: 0.7 }}>
-              Este template ainda não possui parâmetros.
-            </div>
-          )}
-          {template.params.map((param) => (
-            <div
-              key={param.id}
-              style={{
-                fontSize: 12,
-                padding: '6px 8px',
-                borderRadius: 6,
-                background: '#050811',
-                marginBottom: 4
-              }}
-            >
-              <div style={{ fontWeight: 500 }}>{param.label}</div>
-              <div style={{ opacity: 0.7 }}>
-                tipo: <code>{param.type}</code>{' '}
-                {param.cssVar && (
-                  <>
-                    • var: <code>{param.cssVar}</code>
-                  </>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Controles de parâmetros */}
+        <ParameterControls
+          template={template}
+          paramValues={paramValues}
+          onChange={handleChange}
+          onReset={resetToDefaults}
+        />
       </div>
     </section>
   );
