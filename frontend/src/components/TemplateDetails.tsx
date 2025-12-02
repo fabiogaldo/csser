@@ -2,6 +2,7 @@ import type { Template } from '../types/template';
 import { PreviewPanel } from './PreviewPanel';
 import { useTemplateParams } from '../hooks/useTemplateParams';
 import { ParameterControls } from './ParameterControls';
+import { GeneratedCssPanel } from './GeneratedCssPanel';
 
 interface TemplateDetailsProps {
   template: Template | null;
@@ -10,14 +11,12 @@ interface TemplateDetailsProps {
 export function TemplateDetails({ template }: TemplateDetailsProps) {
   if (!template) {
     return (
-      <div style={{ padding: 16, fontSize: 14, opacity: 0.7 }}>
-        Selecione um template na lista à esquerda para visualizar detalhes.
+      <div className="flex-1 flex items-center justify-center text-sm text-slate-400">
+        Selecione um template na lista à esquerda.
       </div>
     );
   }
 
-  // A key garante que, ao trocar de template, o componente interno
-  // é remontado, reinicializando o estado baseado no novo template
   return <TemplateDetailsInner key={template._id} template={template} />;
 }
 
@@ -25,90 +24,54 @@ function TemplateDetailsInner({ template }: { template: Template }) {
   const { paramValues, cssVars, handleChange, resetToDefaults } = useTemplateParams(template);
 
   return (
-    <section
-      style={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '8px',
-        overflow: 'hidden'
-      }}
-    >
+    <section className="flex flex-col gap-3 overflow-hidden">
       <div>
-        <h2 style={{ margin: 0, fontSize: 16 }}>{template.name}</h2>
+        <h2 className="text-[18px] font-semibold text-slate-50">{template.name}</h2>
         {template.description && (
-          <p style={{ margin: '4px 0 0', fontSize: 13, opacity: 0.8 }}>
-            {template.description}
-          </p>
+          <p className="mt-1 text-sm text-slate-400">{template.description}</p>
         )}
       </div>
 
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1.1fr 1.1fr 0.9fr',
-          gap: '12px',
-          marginTop: 8,
-          height: '100%',
-          minHeight: 0
-        }}
-      >
-        {/* Preview ao vivo com CSS vars aplicadas */}
-        <PreviewPanel html={template.html} css={template.css} cssVars={cssVars} />
-
-        {/* Código HTML/CSS */}
-        <div
-          style={{
-            borderRadius: 8,
-            border: '1px solid #1d2330',
-            padding: 12,
-            background: '#0f141f',
-            overflow: 'auto',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 8
-          }}
-        >
-          <div>
-            <div style={{ fontSize: 12, opacity: 0.7, marginBottom: 4 }}>HTML</div>
-            <pre
-              style={{
-                margin: 0,
-                fontSize: 12,
-                background: '#050811',
-                padding: 8,
-                borderRadius: 6,
-                whiteSpace: 'pre-wrap'
-              }}
-            >
-              {template.html}
-            </pre>
-          </div>
-
-          <div>
-            <div style={{ fontSize: 12, opacity: 0.7, marginBottom: 4 }}>CSS</div>
-            <pre
-              style={{
-                margin: 0,
-                fontSize: 12,
-                background: '#050811',
-                padding: 8,
-                borderRadius: 6,
-                whiteSpace: 'pre-wrap'
-              }}
-            >
-              {template.css}
-            </pre>
+      <div className="grid grid-cols-[1.1fr_1.1fr_0.9fr] gap-3 min-h-[420px]">
+        {/* Preview */}
+        <div className="rounded-xl border border-slate-700 bg-slate-950 p-3 flex flex-col gap-2 shadow-md">
+          <div className="text-xs text-slate-400">Preview</div>
+          <div className="flex-1 rounded-lg border border-slate-800 bg-slate-900 overflow-hidden">
+            <PreviewPanel html={template.html} css={template.css} cssVars={cssVars} />
           </div>
         </div>
 
-        {/* Controles de parâmetros */}
-        <ParameterControls
-          template={template}
-          paramValues={paramValues}
-          onChange={handleChange}
-          onReset={resetToDefaults}
-        />
+        {/* Código + CSS gerado */}
+        <div className="rounded-xl border border-slate-700 bg-slate-950 p-3 flex flex-col gap-2 shadow-md">
+          <div className="text-xs text-slate-400">Código</div>
+          <div className="flex-1 flex flex-col gap-3 overflow-auto">
+            <div>
+              <div className="text-[11px] text-slate-400 mb-1">HTML (template)</div>
+              <pre className="m-0 text-[11px] leading-snug bg-slate-900 border border-slate-800 rounded-md p-2 whitespace-pre-wrap max-h-32 overflow-auto text-slate-100">
+                {template.html}
+              </pre>
+            </div>
+
+            <div>
+              <div className="text-[11px] text-slate-400 mb-1">CSS (original)</div>
+              <pre className="m-0 text-[11px] leading-snug bg-slate-900 border border-slate-800 rounded-md p-2 whitespace-pre-wrap max-h-32 overflow-auto text-slate-100">
+                {template.css}
+              </pre>
+            </div>
+
+            <GeneratedCssPanel css={template.css} cssVars={cssVars} />
+          </div>
+        </div>
+
+        {/* Parâmetros */}
+        <div className="rounded-xl border border-slate-700 bg-slate-950 p-3 flex flex-col shadow-md">
+          <ParameterControls
+            template={template}
+            paramValues={paramValues}
+            onChange={handleChange}
+            onReset={resetToDefaults}
+          />
+        </div>
       </div>
     </section>
   );

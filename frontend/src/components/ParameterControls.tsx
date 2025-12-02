@@ -1,4 +1,8 @@
+// src/components/ParameterControls.tsx
 import type { Template, TemplateParam } from '../types/template';
+import { Slider } from "@/components/ui/slider";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 
 interface ParameterControlsProps {
   template: Template;
@@ -15,204 +19,117 @@ export function ParameterControls({
 }: ParameterControlsProps) {
   if (template.params.length === 0) {
     return (
-      <div
-        style={{
-          borderRadius: 8,
-          border: '1px solid #1d2330',
-          padding: 12,
-          background: '#0f141f',
-          fontSize: 12,
-          opacity: 0.8
-        }}
-      >
+      <div className="rounded-lg border border-border bg-slate-950/70 p-3 text-xs text-muted-foreground">
         Este template ainda não possui parâmetros configuráveis.
       </div>
     );
   }
 
   return (
-    <div
-      style={{
-        borderRadius: 8,
-        border: '1px solid #1d2330',
-        padding: 12,
-        background: '#0f141f',
-        overflow: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 8
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 4
-        }}
-      >
-        <div style={{ fontSize: 12, opacity: 0.7 }}>Parâmetros</div>
+    <div className="rounded-lg border border-slate-700 bg-slate-900 p-3 flex flex-col gap-2">
+      <div className="flex items-center justify-between mb-1">
+        <span className="text-xs text-muted-foreground">Parâmetros</span>
         <button
           type="button"
           onClick={onReset}
-          style={{
-            borderRadius: 999,
-            border: '1px solid #2b3448',
-            padding: '2px 8px',
-            background: 'transparent',
-            color: '#f5f5f5',
-            fontSize: 11,
-            cursor: 'pointer'
-          }}
+          className="rounded-full border border-border/80 px-2 py-[2px] text-[11px] text-muted-foreground hover:bg-slate-900/80 transition-colors"
         >
           Reset
         </button>
       </div>
 
-      {template.params.map((param) => {
-        const value = paramValues[param.id];
+      <div className="flex flex-col gap-2">
+        {template.params.map((param) => {
+          const value = paramValues[param.id];
 
-        return (
-          <div
-            key={param.id}
-            style={{
-              padding: '6px 8px',
-              borderRadius: 6,
-              background: '#050811',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 4,
-              fontSize: 12
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
-              <span style={{ fontWeight: 500 }}>{param.label}</span>
-              {param.cssVar && (
-                <span style={{ opacity: 0.6 }}>
-                  <code>{param.cssVar}</code>
-                </span>
+          return (
+            <div
+              key={param.id}
+               className="rounded-md bg-slate-950 px-2.5 py-2 text-xs flex flex-col gap-1.5 border border-slate-800">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-medium text-[12px]">{param.label}</span>
+                {param.cssVar && (
+                  <span className="text-[10px] text-muted-foreground">
+                    <code>{param.cssVar}</code>
+                  </span>
+                )}
+              </div>
+
+              {param.type === 'number' && (
+                <div className="flex flex-col gap-1">
+                  {typeof param.min === 'number' && typeof param.max === 'number' && (
+                    <Slider
+                      min={param.min}
+                      max={param.max}
+                      step={param.step ?? 1}
+                      value={[typeof value === 'number' ? value : Number(value ?? 0)]}
+                      onValueChange={([v]) => onChange(param, v)}
+                    />
+                  )}
+                  <div className="flex items-center justify-between gap-2">
+                    <Input
+                      type="number"
+                      className="h-7 w-[80px] text-[11px]"
+                      value={typeof value === 'number' ? value : Number(value ?? 0)}
+                      onChange={(e) => {
+                        const num = Number(e.target.value);
+                        onChange(param, Number.isNaN(num) ? 0 : num);
+                      }}
+                    />
+                    {param.unit && (
+                      <span className="text-[11px] text-muted-foreground">
+                        {param.unit}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {param.type === 'color' && (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={typeof value === 'string' ? value : String(value ?? '#ffffff')}
+                    onChange={(e) => onChange(param, e.target.value)}
+                    className="h-6 w-10 cursor-pointer rounded border border-border bg-transparent p-0"
+                  />
+                  <Input
+                    type="text"
+                    className="h-7 text-[11px]"
+                    value={typeof value === 'string' ? value : String(value ?? '')}
+                    onChange={(e) => onChange(param, e.target.value)}
+                    placeholder="#ffffff"
+                  />
+                </div>
+              )}
+
+              {param.type === 'select' && (
+                <select
+                  value={String(value ?? '')}
+                  onChange={(e) => onChange(param, e.target.value)}
+                  className="h-7 rounded border border-border bg-slate-950/70 px-2 text-[11px] text-foreground"
+                >
+                  {(param.options ?? []).map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              )}
+
+              {param.type === 'boolean' && (
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <Switch
+                    checked={Boolean(value)}
+                    onCheckedChange={(checked) => onChange(param, checked)}
+                  />
+                  <span className="text-[11px] text-muted-foreground">Ativar</span>
+                </label>
               )}
             </div>
-
-            {param.type === 'number' && (
-              <>
-                {typeof param.min === 'number' && typeof param.max === 'number' ? (
-                  <input
-                    type="range"
-                    min={param.min}
-                    max={param.max}
-                    step={param.step ?? 1}
-                    value={typeof value === 'number' ? value : Number(value ?? 0)}
-                    onChange={(e) =>
-                      onChange(param, Number(e.target.value))
-                    }
-                  />
-                ) : null}
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                  }}
-                >
-                  <input
-                    type="number"
-                    value={typeof value === 'number' ? value : Number(value ?? 0)}
-                    onChange={(e) => {
-                      const num = Number(e.target.value);
-                      onChange(param, Number.isNaN(num) ? 0 : num);
-                    }}
-                    style={{
-                      width: '80px',
-                      background: '#020409',
-                      borderRadius: 4,
-                      border: '1px solid #2b3448',
-                      color: '#f5f5f5',
-                      padding: '2px 4px',
-                      fontSize: 12
-                    }}
-                  />
-                  {param.unit && (
-                    <span style={{ opacity: 0.7, marginLeft: 4 }}>{param.unit}</span>
-                  )}
-                </div>
-              </>
-            )}
-
-            {param.type === 'color' && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <input
-                  type="color"
-                  value={typeof value === 'string' ? value : String(value ?? '#ffffff')}
-                  onChange={(e) => onChange(param, e.target.value)}
-                  style={{
-                    width: 32,
-                    height: 20,
-                    padding: 0,
-                    borderRadius: 4,
-                    border: '1px solid #2b3448',
-                    background: 'transparent'
-                  }}
-                />
-                <input
-                  type="text"
-                  value={typeof value === 'string' ? value : String(value ?? '')}
-                  onChange={(e) => onChange(param, e.target.value)}
-                  style={{
-                    flex: 1,
-                    background: '#020409',
-                    borderRadius: 4,
-                    border: '1px solid #2b3448',
-                    color: '#f5f5f5',
-                    padding: '2px 4px',
-                    fontSize: 12
-                  }}
-                  placeholder="#ffffff"
-                />
-              </div>
-            )}
-
-            {param.type === 'select' && (
-              <select
-                value={String(value ?? '')}
-                onChange={(e) => onChange(param, e.target.value)}
-                style={{
-                  background: '#020409',
-                  borderRadius: 4,
-                  border: '1px solid #2b3448',
-                  color: '#f5f5f5',
-                  padding: '2px 4px',
-                  fontSize: 12
-                }}
-              >
-                {(param.options ?? []).map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            )}
-
-            {param.type === 'boolean' && (
-              <label
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  cursor: 'pointer'
-                }}
-              >
-                <input
-                  type="checkbox"
-                  checked={Boolean(value)}
-                  onChange={(e) => onChange(param, e.target.checked)}
-                />
-                <span style={{ opacity: 0.8 }}>Ativar</span>
-              </label>
-            )}
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
