@@ -26,35 +26,45 @@ function TemplateDetailsInner({ template }: { template: Template }) {
   return (
     <section className="flex flex-col gap-3 overflow-hidden">
       <div>
-        <h2 className="text-[18px] font-semibold text-slate-50">{template.name}</h2>
+        <h2 className="text-[18px] font-semibold text-slate-900">{template.name}</h2>
         {template.description && (
-          <p className="mt-1 text-sm text-slate-400">{template.description}</p>
+          <p className="mt-1 text-sm text-slate-500">{template.description}</p>
         )}
       </div>
 
-      <div className="grid grid-cols-[1.1fr_1.1fr_0.9fr] gap-3 min-h-[420px]">
+      <div
+        className="
+          grid gap-3 min-h-[420px]
+          grid-cols-1
+          lg:grid-cols-[1.1fr_1.1fr_0.9fr]
+        "
+      >
         {/* Preview */}
-        <div className="rounded-xl border border-slate-700 bg-slate-950 p-3 flex flex-col gap-2 shadow-md">
-          <div className="text-xs text-slate-400">Preview</div>
-          <div className="flex-1 rounded-lg border border-slate-800 bg-slate-900 overflow-hidden">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 flex flex-col gap-3 shadow-sm">
+          <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+            Preview
+          </div>
+          <div className="flex-1 rounded-xl border border-slate-200 bg-slate-100 overflow-hidden">
             <PreviewPanel html={template.html} css={template.css} cssVars={cssVars} />
           </div>
         </div>
 
         {/* Código + CSS gerado */}
-        <div className="rounded-xl border border-slate-700 bg-slate-950 p-3 flex flex-col gap-2 shadow-md">
-          <div className="text-xs text-slate-400">Código</div>
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 flex flex-col gap-3 shadow-sm">
+          <div className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+            Código
+          </div>
           <div className="flex-1 flex flex-col gap-3 overflow-auto">
             <div>
-              <div className="text-[11px] text-slate-400 mb-1">HTML (template)</div>
-              <pre className="m-0 text-[11px] leading-snug bg-slate-900 border border-slate-800 rounded-md p-2 whitespace-pre-wrap max-h-32 overflow-auto text-slate-100">
+              <div className="text-[11px] text-slate-500 mb-1">HTML (template)</div>
+              <pre className="m-0 text-[12px] leading-snug bg-slate-900 text-slate-100 border border-slate-900 rounded-md p-2 whitespace-pre-wrap max-h-32 overflow-auto">
                 {template.html}
               </pre>
             </div>
 
             <div>
-              <div className="text-[11px] text-slate-400 mb-1">CSS (original)</div>
-              <pre className="m-0 text-[11px] leading-snug bg-slate-900 border border-slate-800 rounded-md p-2 whitespace-pre-wrap max-h-32 overflow-auto text-slate-100">
+              <div className="text-[11px] text-slate-500 mb-1">CSS (original)</div>
+              <pre className="m-0 text-[12px] leading-snug bg-slate-900 text-slate-100 border border-slate-900 rounded-md p-2 whitespace-pre-wrap max-h-32 overflow-auto">
                 {template.css}
               </pre>
             </div>
@@ -64,7 +74,7 @@ function TemplateDetailsInner({ template }: { template: Template }) {
         </div>
 
         {/* Parâmetros */}
-        <div className="rounded-xl border border-slate-700 bg-slate-950 p-3 flex flex-col shadow-md">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 flex flex-col shadow-sm">
           <ParameterControls
             template={template}
             paramValues={paramValues}

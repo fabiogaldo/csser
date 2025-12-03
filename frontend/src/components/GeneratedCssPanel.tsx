@@ -37,21 +37,21 @@ export function GeneratedCssPanel({ css, cssVars }: GeneratedCssPanelProps) {
   }
 
   return (
-    <div className="mt-2 rounded-md border border-slate-700 bg-slate-900 p-2 flex flex-col gap-2">
+    <div className="mt-2 rounded-md border border-slate-200 bg-slate-50 p-2 flex flex-col gap-2">
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs text-slate-300">
-          CSS gerado <span className="text-slate-500">(com variáveis)</span>
+        <span className="text-xs text-slate-600">
+          CSS gerado <span className="text-slate-400">(com variáveis)</span>
         </span>
         <button
           type="button"
           onClick={handleCopy}
-          className="rounded-full border border-slate-600 px-2 py-[2px] text-[11px] text-slate-100 hover:bg-slate-800"
+          className="rounded-full border border-slate-300 px-2 py-[2px] text-[11px] text-slate-700 hover:bg-slate-100"
         >
           {copied ? 'Copiado!' : 'Copiar'}
         </button>
       </div>
 
-      <pre className="m-0 text-[11px] leading-snug bg-slate-950 border border-slate-800 rounded-md p-2 whitespace-pre-wrap max-h-40 overflow-auto text-slate-100">
+      <pre className="m-0 text-[12px] leading-snug bg-slate-900 text-slate-100 border border-slate-900 rounded-md p-2 whitespace-pre-wrap max-h-32 overflow-auto">
         {generatedCss}
       </pre>
     </div>

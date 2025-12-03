@@ -26,7 +26,7 @@ export function ParameterControls({
   }
 
   return (
-    <div className="rounded-lg border border-slate-700 bg-slate-900 p-3 flex flex-col gap-2">
+      <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 flex flex-col gap-2">
       <div className="flex items-center justify-between mb-1">
         <span className="text-xs text-muted-foreground">Parâmetros</span>
         <button

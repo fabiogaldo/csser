@@ -59,7 +59,7 @@ ${varsBlock}
   return (
     <div
       ref={containerRef}
-      className="w-full h-full min-h-[260px] rounded-lg bg-slate-900 flex items-start justify-center p-6 overflow-auto"
+      className="w-full h-full min-h-[260px] rounded-xl bg-slate-100 flex items-start justify-center p-8 overflow-auto"
     />
   );
 }
